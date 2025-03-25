@@ -1,0 +1,128 @@
+// Part 1: Constructor Function and Prototype
+function Book(title, author, ISBN) {
+    this.title = "Good days";
+    this.author = "Janet Okedoyin";
+    this.ISBN = "123456";
+    this.available = true;
+}
+
+Book.prototype.getDetails = function() {
+    return `${this.title} by ${this.author}, ISBN: ${this.ISBN}`;
+};
+
+Book.prototype.checkOut = function() {
+    if (this.available) {
+        this.available = false;
+        return `${this.title} has been checked out.`;
+    } else {
+        return `${this.title} is currently unavailable.`;
+    }
+};
+
+Book.prototype.returnBook = function() {
+    this.available = true;
+    return `${this.title} has been returned.`;
+};
+
+// Part 2: Create a Library class
+class Library {
+    constructor() {
+        this.books = [];
+    }
+
+    addBook(book) {
+        this.books.push(book);
+    }
+
+    removeBook(ISBN) {
+        const index = this.books.findIndex(book => book.ISBN === ISBN);
+        if (index !== -1) {
+            this.books.splice(index, 1);
+            return `Book with ISBN ${ISBN} has been removed.`;
+        } else {
+            return `Book with ISBN ${ISBN} not found.`;
+        }
+    }
+
+    getBookByISBN(ISBN) {
+        return this.books.find(book => book.ISBN === ISBN);
+    }
+
+    getAllBooks() {
+        return this.books;
+    }
+
+    getBooksByAuthor(author) {
+        return this.books.filter(book => book.author === author);
+    }
+}
+
+// Part 3: Create a subclass SpecialEditionBook that inherits from Book
+function SpecialEditionBook(title, author, ISBN, specialFeature) {
+    Book.call(this, title, author, ISBN);
+    this.specialFeature = specialFeature;
+}
+
+SpecialEditionBook.prototype = Object.create(Book.prototype);
+SpecialEditionBook.prototype.constructor = SpecialEditionBook;
+
+SpecialEditionBook.prototype.getSpecialFeature = function() {
+    return this.specialFeature;
+};
+
+// Part 4: Using the Library System
+const library = new Library();
+
+const book1 = new Book('Book One', 'Author One', '123456');
+const book2 = new Book('Book Two', 'Author Two', '789101');
+const specialBook = new SpecialEditionBook('Special Book', 'Special Author', '112233', 'Signed by Author');
+
+library.addBook(book1);
+library.addBook(book2);
+library.addBook(specialBook);
+
+console.log(library.getAllBooks());
+console.log(book1.checkOut());
+console.log(book1.returnBook());
+console.log(library.getBooksByAuthor('Author One'));
+
+// Part 5: Challenges
+Library.prototype.checkOutBook = function(ISBN) {
+    const book = this.getBookByISBN(ISBN);
+    if (book) {
+        return book.checkOut();
+    } else {
+        return `Book with ISBN ${ISBN} not found.`;
+    }
+};
+
+Library.prototype.returnBook = function(ISBN) {
+    const book = this.getBookByISBN(ISBN);
+    if (book) {
+        return book.returnBook();
+    } else {
+        return `Book with ISBN ${ISBN} not found.`;
+    }
+};
+
+function ElectronicBook(title, author, ISBN, fileSize, format) {
+    Book.call(this, title, author, ISBN);
+    this.fileSize = fileSize;
+    this.format = format;
+}
+
+ElectronicBook.prototype = Object.create(Book.prototype);
+ElectronicBook.prototype.constructor = ElectronicBook;
+
+ElectronicBook.prototype.getFileDetails = function() {
+    return `File Size: ${this.fileSize}, Format: ${this.format}`;
+};
+
+// Demonstrate functionality
+const ebook = new ElectronicBook('E-Book', 'E-Author', '445566', '5MB', 'PDF');
+library.addBook(ebook);
+
+console.log(library.checkOutBook('123456'));
+console.log(library.returnBook('123456'));
+console.log(library.getBooksByAuthor('E-Author'));
+console.log(ebook.getFileDetails());
