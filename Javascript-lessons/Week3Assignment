@@ -15,7 +15,7 @@ Book.prototype.checkOut = function() {
         this.available = false;
         return `${this.title} has been checked out.`;
     } else {
-        return `${this.title} is currently unavailable.`;
+        return `${this.title} is currently not available.`;
     }
 };
 

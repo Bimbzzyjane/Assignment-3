@@ -1,8 +1,14 @@
-import mongoose, { Mongoose } from "mongoose";
+import config from "config";
+import mongoose from "mongoose";
 
 const connect = async () => {
-    const uri = 'mongodb://localhost:27017/cohort-6';
-    await mongoose.connect(uri);
+    const uri = config.get("dbURI") as string; // Replace with your MongoDB connection string
+    try{
+    await mongoose.connect(uri)
     console.log('Connected');
+} catch (error) {
+    console.log(error)
+    process.exit(1)
+}
 }
 export default connect;
